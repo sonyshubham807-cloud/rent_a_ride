@@ -5,20 +5,20 @@ import random
 import string
 import bcrypt
 
-# AI module (make sure ai.py exists)
 from ai import chatbot_response
 
 app = Flask(__name__)
-app.secret_key = "rent_a_ride_secret_key"
+app.secret_key = os.getenv("SECRET_KEY", "rent_a_ride_secret_key")
 
 
-# ================= DATABASE CONNECTION (FIXED FOR CLOUD) =================
+# ================= DB CONNECTION =================
 def get_db():
     return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", "dcs@123"),
-        database=os.getenv("DB_NAME", "rent_a_ride")
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
+        port=int(os.getenv("DB_PORT", 3306))
     )
 
 
@@ -33,6 +33,9 @@ def home():
 
     cursor.execute("SELECT * FROM vehicles LIMIT 6")
     vehicles = cursor.fetchall()
+
+    cursor.close()
+    db.close()
 
     return render_template("index.html", vehicles=vehicles)
 
@@ -64,6 +67,9 @@ def register():
         """, (full_name, email, hashed, phone, address))
 
         db.commit()
+        cursor.close()
+        db.close()
+
         flash("Registered Successfully")
         return redirect(url_for("login"))
 
@@ -83,6 +89,9 @@ def login():
 
         cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
         user = cursor.fetchone()
+
+        cursor.close()
+        db.close()
 
         if user and bcrypt.checkpw(password.encode(), user["password"].encode()):
 
@@ -114,14 +123,10 @@ def dashboard():
 
     bookings = cursor.fetchall()
 
+    cursor.close()
+    db.close()
+
     return render_template("dashboard.html", bookings=bookings)
-
-
-# ================= LOGOUT =================
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
 
 
 # ================= VEHICLES =================
@@ -133,12 +138,17 @@ def vehicles():
     search = request.args.get("search")
 
     if search:
-        cursor.execute("SELECT * FROM vehicles WHERE vehicle_name LIKE %s",
-                       ('%' + search + '%',))
+        cursor.execute(
+            "SELECT * FROM vehicles WHERE vehicle_name LIKE %s",
+            ('%' + search + '%',)
+        )
     else:
         cursor.execute("SELECT * FROM vehicles")
 
     vehicles = cursor.fetchall()
+
+    cursor.close()
+    db.close()
 
     return render_template("vehicles.html", vehicles=vehicles)
 
@@ -178,33 +188,18 @@ def book_vehicle(vehicle_id):
 
         booking_id = cursor.lastrowid
 
+        cursor.close()
+        db.close()
+
         return redirect(url_for("payment", booking_id=booking_id))
+
+    cursor.close()
+    db.close()
 
     return render_template("booking.html", vehicle=vehicle)
 
 
-# ================= BOOKINGS PAGE =================
-@app.route("/bookings")
-def bookings():
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-
-    db = get_db()
-    cursor = db.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT bookings.*, vehicles.vehicle_name
-        FROM bookings
-        JOIN vehicles ON bookings.vehicle_id = vehicles.vehicle_id
-        WHERE bookings.user_id=%s
-    """, (session["user_id"],))
-
-    bookings = cursor.fetchall()
-
-    return render_template("bookings.html", bookings=bookings)
-
-
-# ================= CANCEL BOOKING =================
+# ================= CANCEL BOOKING (FIXED) =================
 @app.route("/cancel_booking/<int:booking_id>")
 def cancel_booking(booking_id):
 
@@ -214,34 +209,16 @@ def cancel_booking(booking_id):
     db = get_db()
     cursor = db.cursor()
 
-    # 1. FIRST delete payment record (IMPORTANT)
-    cursor.execute(
-        "DELETE FROM payments WHERE booking_id=%s",
-        (booking_id,)
-    )
-
-    # 2. THEN delete booking record
-    cursor.execute(
-        "DELETE FROM bookings WHERE booking_id=%s",
-        (booking_id,)
-    )
+    # FIX: delete child first (payments), then booking
+    cursor.execute("DELETE FROM payments WHERE booking_id=%s", (booking_id,))
+    cursor.execute("DELETE FROM bookings WHERE booking_id=%s", (booking_id,))
 
     db.commit()
+    cursor.close()
+    db.close()
 
     flash("Booking Cancelled Successfully")
     return redirect(url_for("dashboard"))
-
-
-# ================= CHATBOT =================
-@app.route("/chatbot", methods=["GET", "POST"])
-def chatbot():
-
-    response = None
-
-    if request.method == "POST":
-        response = chatbot_response(request.form["message"])
-
-    return render_template("chatbot.html", response=response)
 
 
 # ================= PAYMENT =================
@@ -275,8 +252,13 @@ def payment(booking_id):
         """, (booking_id, request.form["payment_method"], txn))
 
         db.commit()
+        cursor.close()
+        db.close()
 
         return redirect(url_for("booking_receipt", booking_id=booking_id))
+
+    cursor.close()
+    db.close()
 
     return render_template("payment.html", booking=booking)
 
@@ -298,11 +280,24 @@ def booking_receipt(booking_id):
 
     receipt = cursor.fetchone()
 
+    cursor.close()
+    db.close()
+
     return render_template("receipt.html", receipt=receipt)
 
 
-# ================= RUN (IMPORTANT FOR CLOUD RUN) =================
+# ================= CHATBOT =================
+@app.route("/chatbot", methods=["GET", "POST"])
+def chatbot():
+
+    response = None
+    if request.method == "POST":
+        response = chatbot_response(request.form["message"])
+
+    return render_template("chatbot.html", response=response)
+
+
+# ================= CLOUD RUN ENTRY =================
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
