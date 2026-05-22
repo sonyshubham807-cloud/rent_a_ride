@@ -11,14 +11,15 @@ app.secret_key = "rent_a_ride_secret_key"
 
 # ================= DATABASE CONNECTION =================
 
-db = mysql.connector.connect(
-    host="host.docker.internal",
-    user="dockeruser",
-    password="docker123",
-    database="rent_a_ride"
-)
+#db = mysql.connector.connect(
+ #  password="docker123",
+  #  database="rent_a_ride"
+#)
 
-cursor = db.cursor(dictionary=True)
+#cursor = db.cursor(dictionary=True)
+@app.route("/")
+def test():
+    return "Rent A Ride Cloud Run Working!"
 
 
 # ================= HOME PAGE =================
