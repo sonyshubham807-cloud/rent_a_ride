@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from ai import recommend_vehicle, chatbot_response
+#from ai import recommend_vehicle, chatbot_response
 from datetime import datetime
 import random
 import mysql.connector
@@ -630,13 +630,14 @@ def booking_receipt(booking_id):
 
 import os
 
+
+
 if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 8080))
 
     app.run(
         host="0.0.0.0",
-        port=port,
-        debug=True
+        port=port
     )
 
