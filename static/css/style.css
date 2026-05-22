@@ -1,0 +1,313 @@
+body{
+    background-color: #f5f7fa;
+    font-family: Arial, sans-serif;
+}
+
+/* =========================================
+   CUSTOM NAVBAR STYLING
+   ========================================= */
+.custom-navbar {
+    background-color: #0f172a; /* Deep, modern dark navy */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+}
+
+/* Link Styling & Animation */
+.custom-navbar .nav-link {
+    color: #cbd5e1 !important; /* Soft gray/white */
+    font-weight: 500;
+    margin: 0 0.5rem;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* The animated underline effect */
+.custom-navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3b82f6; /* Bright blue */
+    transition: width 0.3s ease;
+}
+
+.custom-navbar .nav-link:hover {
+    color: #ffffff !important;
+}
+
+.custom-navbar .nav-link:hover::after {
+    width: 100%;
+}
+
+/* User Greeting Text */
+.welcome-msg {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Custom Buttons (Logout & Register) */
+.btn-logout, .btn-register {
+    text-decoration: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+/* Logout Button styling */
+.btn-logout {
+    color: #ef4444; /* Red */
+    border: 1px solid #ef4444;
+    background-color: transparent;
+}
+
+.btn-logout:hover {
+    background-color: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Register Button styling */
+.btn-register {
+    color: #10b981; /* Green */
+    border: 1px solid #10b981;
+    background-color: transparent;
+}
+
+.btn-register:hover {
+    background-color: #10b981;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Makes the mobile hamburger icon visible on the dark background */
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.5);
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* =========================================
+   HERO SECTION
+   ========================================= */
+.hero{
+    background: linear-gradient(to right,#2563eb,#1e3a8a);
+    color: white;
+    padding: 100px 20px;
+    text-align: center;
+    border-radius: 0 0 20px 20px;
+}
+
+.hero h1{
+    font-size: 55px;
+    font-weight: bold;
+}
+
+.hero p{
+    font-size: 20px;
+}
+
+/* =========================================
+   VEHICLE CARDS
+   ========================================= */
+.vehicle-card{
+    transition: 0.3s;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.vehicle-card:hover{
+    transform: translateY(-10px);
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+}
+
+.vehicle-img{
+    height: 220px;
+    object-fit: cover;
+}
+
+.price{
+    color: green;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+.btn-custom{
+    background-color: #2563eb;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.btn-custom:hover{
+    background-color: #1e40af;
+    color: white;
+}
+
+/* =========================================
+   FORMS
+   ========================================= */
+.form-container{
+    max-width: 500px;
+    margin: auto;
+    margin-top: 50px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   DASHBOARD CARDS
+   ========================================= */
+.dashboard-card{
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+}
+
+.bg-blue{
+    background: #2563eb;
+}
+
+.bg-green{
+    background: #16a34a;
+}
+
+.bg-orange{
+    background: #ea580c;
+}
+
+.bg-red{
+    background: #dc2626;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+footer{
+    margin-top: 100px;
+}
+
+footer h4{
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+footer p,
+footer a{
+    color: #d1d5db !important;
+}
+
+footer a:hover{
+    color: white !important;
+}
+
+/* ================= PAYMENT PAGE ================= */
+.payment-bg{
+    min-height: 100vh;
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+}
+
+.payment-card{
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.payment-header{
+    background: linear-gradient(to right, #ff8c00, #ffb347);
+    padding: 40px;
+}
+
+.booking-summary{
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.payment-btn{
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.payment-btn:hover{
+    transform: scale(1.02);
+}
+
+/* ================= RECEIPT PAGE ================= */
+.receipt-bg{
+    background: #eef2f7;
+    min-height: 100vh;
+}
+
+.receipt-card{
+    background: white;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.receipt-top{
+    background: linear-gradient(to right, #141e30, #243b55);
+    padding: 40px;
+}
+
+.receipt-section{
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.receipt-total{
+    background: #111827;
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+/* ================= STATUS BADGES ================= */
+.badge{
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .payment-header h1{
+        font-size: 32px;
+    }
+    .receipt-top h1{
+        font-size: 32px;
+    }
+    .receipt-body{
+        padding: 25px !important;
+    }
+}
+
+@media(max-width:576px){
+    .payment-header{
+        padding: 25px;
+    }
+    .receipt-top{
+        padding: 25px;
+    }
+    .receipt-section{
+        padding: 18px;
+    }
+}
